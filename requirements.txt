@@ -1,0 +1,22 @@
+# --- Web / Dashboard ---
+Flask==3.0.3
+SQLAlchemy==2.0.30
+
+# --- Base de données ---
+PyMySQL==1.1.1          # nécessaire uniquement si DATABASE_URL pointe vers MySQL
+# psycopg2-binary==2.9.9 # décommenter si utilisation de PostgreSQL
+
+# --- Scraping HTML ---
+requests==2.32.3
+beautifulsoup4==4.12.3
+lxml==5.2.2
+# playwright==1.45.0     # décommenter pour les sites nécessitant du JavaScript
+
+# --- Catalogues PDF / OCR ---
+pdfplumber==0.11.2
+pytesseract==0.3.13      # nécessite l'installation du binaire Tesseract OCR sur le système
+Pillow==10.4.0
+
+# --- Nettoyage / traitement des données ---
+pandas==2.2.2
+openpyxl==3.1.5          # requis pour l'export Excel

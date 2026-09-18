@@ -1,0 +1,9 @@
+data/*.db
+*.db
+logs/
+data/catalogues/
+data/images/
+__pycache__/
+.venv/
+venv/
+*.pyc

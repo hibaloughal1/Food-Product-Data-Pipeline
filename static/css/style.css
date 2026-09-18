@@ -1,0 +1,177 @@
+/* ===========================================================
+   Thème du tableau de bord (mode clair / mode sombre)
+   =========================================================== */
+
+:root {
+    /* Mode clair : palette verte/émeraude (identité "produits frais") */
+    --oz-bg: #f3f6f5;
+    --oz-surface: #ffffff;
+    --oz-surface-alt: #eef5f2;
+    --oz-border: #dfe7e4;
+    --oz-text: #1c2a27;
+    --oz-text-muted: #5c6b67;
+    --oz-primary: #0f9d70;
+    --oz-primary-dark: #0b7d59;
+    --oz-primary-light: #d7f0e6;
+    --oz-accent: #f0a51e;
+    --oz-danger: #d1495b;
+    --oz-success: #1f9d63;
+    --oz-shadow: 0 1px 3px rgba(16, 40, 34, 0.08), 0 1px 2px rgba(16, 40, 34, 0.06);
+}
+
+[data-theme="dark"] {
+    --oz-bg: #101815;
+    --oz-surface: #172420;
+    --oz-surface-alt: #1d2b26;
+    --oz-border: #2a3b35;
+    --oz-text: #eaf3f0;
+    --oz-text-muted: #9fb3ac;
+    --oz-primary: #2ecc93;
+    --oz-primary-dark: #24a578;
+    --oz-primary-light: #1d3a30;
+    --oz-accent: #f2b544;
+    --oz-danger: #e2657a;
+    --oz-success: #2ecc93;
+    --oz-shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+body {
+    background-color: var(--oz-bg);
+    color: var(--oz-text);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* --- Barre de navigation --- */
+.navbar-custom {
+    background: linear-gradient(90deg, var(--oz-primary-dark), var(--oz-primary));
+}
+
+.theme-toggle {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #fff;
+    border-radius: 999px;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.28);
+}
+
+/* --- Cartes / conteneurs --- */
+.card {
+    background-color: var(--oz-surface);
+    border: 1px solid var(--oz-border);
+    box-shadow: var(--oz-shadow);
+    color: var(--oz-text);
+}
+
+.card-header {
+    font-weight: 600;
+    background-color: var(--oz-surface);
+    border-bottom: 1px solid var(--oz-border);
+    color: var(--oz-text);
+}
+
+.kpi-card {
+    border: 1px solid var(--oz-border);
+    border-left: 4px solid var(--oz-primary);
+}
+
+.kpi-label {
+    font-size: 0.85rem;
+    color: var(--oz-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.kpi-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--oz-text);
+}
+
+/* --- Formulaires / filtres --- */
+.form-select, .form-control {
+    background-color: var(--oz-surface);
+    border: 1px solid var(--oz-border);
+    color: var(--oz-text);
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: var(--oz-primary);
+    box-shadow: 0 0 0 0.2rem var(--oz-primary-light);
+    background-color: var(--oz-surface);
+    color: var(--oz-text);
+}
+
+.form-label {
+    color: var(--oz-text-muted);
+    font-weight: 500;
+}
+
+.btn-outline-secondary {
+    color: var(--oz-primary-dark);
+    border-color: var(--oz-primary);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--oz-primary);
+    border-color: var(--oz-primary);
+    color: #fff;
+}
+
+/* --- Tableaux --- */
+.table {
+    color: var(--oz-text);
+    --bs-table-color: var(--oz-text);
+    --bs-table-bg: transparent;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: var(--oz-surface-alt);
+    color: var(--oz-text);
+}
+
+.table-hover > tbody > tr:hover > * {
+    background-color: var(--oz-primary-light);
+    color: var(--oz-text);
+}
+
+table th {
+    white-space: nowrap;
+    color: var(--oz-text-muted);
+    border-bottom: 2px solid var(--oz-border) !important;
+}
+
+table td, table th {
+    border-color: var(--oz-border) !important;
+}
+
+.meilleure-offre {
+    background-color: var(--oz-primary-light) !important;
+    font-weight: 600;
+}
+
+/* --- Alerte base vide --- */
+.alert-warning {
+    background-color: var(--oz-primary-light);
+    border-color: var(--oz-accent);
+    color: var(--oz-text);
+}
+
+/* --- Badges de réduction --- */
+.badge.bg-danger {
+    background-color: var(--oz-danger) !important;
+}
+
+/* --- Texte secondaire générique --- */
+.text-muted {
+    color: var(--oz-text-muted) !important;
+}

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veille Tarifaire — Food Product Data Pipeline</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script>
+        // Applique le thème sauvegardé avant le premier rendu (évite le flash blanc)
+        (function () {
+            const theme = localStorage.getItem("app-theme") || "light";
+            document.documentElement.setAttribute("data-theme", theme);
+        })();
+    </script>
+</head>
+<body>
+
+<nav class="navbar navbar-dark navbar-custom px-4 d-flex justify-content-between align-items-center">
+    <span class="navbar-brand fw-bold mb-0">🛒 Dashboard de Veille Tarifaire</span>
+    <div class="d-flex align-items-center gap-3">
+        <span class="text-white-50" id="derniere-maj">Dernière mise à jour : —</span>
+        <button type="button" class="theme-toggle" id="theme-toggle" title="Basculer mode clair / sombre">
+            <span id="theme-icon">🌙</span> <span id="theme-label">Mode sombre</span>
+        </button>
+    </div>
+</nav>
+
+<div class="container-fluid p-4">
+
+    <div class="alert alert-warning d-none" id="alerte-base-vide" role="alert">
+        ⚠️ Aucune donnée en base pour le moment. Lance <code>python seed_demo_data.py</code> pour charger un jeu de
+        données de démonstration, ou <code>python -m processing.pipeline --toutes</code> pour lancer une vraie collecte.
+    </div>
+
+    <!-- Filtres (10.7) -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label">Enseigne</label>
+                <select id="filtre-enseigne" class="form-select">
+                    <option value="">Toutes les enseignes</option>
+                    {% for e in enseignes %}
+                    <option value="{{ e.id }}">{{ e.nom }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Catégorie</label>
+                <select id="filtre-categorie" class="form-select">
+                    <option value="">Toutes les catégories</option>
+                    {% for c in categories %}
+                    <option value="{{ c }}">{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Recherche produit (nom / référence / marque)</label>
+                <input type="text" id="filtre-recherche" class="form-control" placeholder="Ex : Huile d'olive...">
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <a class="btn btn-outline-secondary w-100" id="export-csv" href="/export/csv">Export CSV</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPIs (10.4) -->
+    <div class="row g-3 mb-4" id="kpi-row">
+        <div class="col-md-3"><div class="card kpi-card shadow-sm"><div class="card-body">
+            <div class="kpi-label">Produits collectés</div><div class="kpi-value" id="kpi-nb-produits">—</div>
+        </div></div></div>
+        <div class="col-md-3"><div class="card kpi-card shadow-sm"><div class="card-body">
+            <div class="kpi-label">Promotions en cours</div><div class="kpi-value text-success" id="kpi-nb-promotions">—</div>
+        </div></div></div>
+        <div class="col-md-3"><div class="card kpi-card shadow-sm"><div class="card-body">
+            <div class="kpi-label">Prix minimum</div><div class="kpi-value" id="kpi-prix-min">—</div>
+        </div></div></div>
+        <div class="col-md-3"><div class="card kpi-card shadow-sm"><div class="card-body">
+            <div class="kpi-label">Prix moyen</div><div class="kpi-value" id="kpi-prix-moyen">—</div>
+        </div></div></div>
+    </div>
+
+    <!-- Graphiques (10.6) -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm"><div class="card-header">Nombre de produits par enseigne</div>
+                <div class="card-body"><canvas id="chart-produits-enseigne"></canvas></div></div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm"><div class="card-header">Répartition par catégorie</div>
+                <div class="card-body"><canvas id="chart-categories"></canvas></div></div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm"><div class="card-header">Top 10 des produits les moins chers</div>
+                <div class="card-body"><canvas id="chart-top-cheap"></canvas></div></div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm"><div class="card-header">Produits en promotion (meilleures réductions)</div>
+                <div class="card-body table-responsive" style="max-height:320px; overflow-y:auto;">
+                    <table class="table table-sm table-hover" id="table-promotions">
+                        <thead><tr><th>Produit</th><th>Enseigne</th><th>Prix normal</th><th>Prix promo</th><th>Réduction</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparaison des prix (2.4.9) -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">Comparaison des prix entre enseignes</div>
+        <div class="card-body table-responsive" id="zone-comparaison">
+            <p class="text-muted mb-0">Utilisez le champ de recherche ci-dessus pour comparer un produit entre plusieurs enseignes.</p>
+        </div>
+    </div>
+
+    <!-- Tableau des produits (10.9) -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-header">Tableau des produits</div>
+        <div class="card-body table-responsive">
+            <table class="table table-striped table-hover" id="table-produits">
+                <thead>
+                    <tr><th>Produit</th><th>Référence</th><th>Marque</th><th>Catégorie</th><th>Enseigne</th><th>Prix normal</th><th>Prix promo</th><th>Collecté le</th></tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/chart.umd.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
