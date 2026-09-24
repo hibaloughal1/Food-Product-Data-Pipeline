@@ -4,6 +4,21 @@ A data engineering pipeline that scrapes food product prices and promotions from
 
 This was built as an academic data engineering project focused on retail price monitoring.
 
+## My Contribution
+
+This repository's commit history reflects my own work on:
+
+- Web scraping (including the catalogue-aggregator scraper actually used to collect data)
+- Data collection and orchestration
+- Data cleaning
+- Data validation
+- Deduplication
+- Database integration (SQLAlchemy models and persistence)
+- The Flask dashboard
+- A synthetic demo-data generator for public demonstration purposes
+
+This project originated from an academic internship assignment defined jointly with a classmate; that assignment document itself is not included in this repository. This repository contains only my own code contributions and is shared for portfolio purposes — it is not a claim of exclusive legal ownership over the underlying project or assignment.
+
 ## Architecture
 
 Five independent modules connected by one pipeline:
@@ -86,7 +101,7 @@ For OCR extraction of scanned PDF catalogues, also install the Tesseract binary 
 
 ## Configuration
 
-By default the project uses SQLite (`data/products.db`, created automatically). To use MySQL instead, set `DATABASE_URL`:
+By default the project uses SQLite (a local database file under `data/`, created automatically). To use MySQL instead, set `DATABASE_URL`:
 
 ```bash
 export DATABASE_URL="mysql+pymysql://user:password@localhost:3306/dbname"
